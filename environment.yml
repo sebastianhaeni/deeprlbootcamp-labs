@@ -9,6 +9,7 @@ dependencies:
     - scipy==0.19.1
     - matplotlib
     - pip
+    - notebook
     - pip:
         - gym==0.9.2
         - chainer==2.0.1
