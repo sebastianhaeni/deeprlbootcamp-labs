@@ -167,7 +167,7 @@ class DQN(object):
         self._render = render
         nn_args = dict(
             dims=[self._get_obs_dim(env)] + q_dim_hid +
-            [self._get_act_dim(env)],
+                 [self._get_act_dim(env)],
             out_fn=lambda x: x)
         # Q-function, Q(s,a,\theta)
         self._q = NN(**nn_args)
@@ -204,13 +204,12 @@ class DQN(object):
         # Hint: You may want to make use of the following fields: self._discount, self._q, self._qt
         # Hint2: Q-function can be called by self._q.forward(argument)
         # Hint3: You might also find https://docs.chainer.org/en/stable/reference/generated/chainer.functions.select_item.html useful
-        loss = C.Variable(np.array([0.]))  # TODO: replace this line
         "*** YOUR CODE HERE ***"
 
         ####################################################################################################
 
         y = l_rew + (1 - l_done) * self._discount * F.max(self._qt.forward(l_next_obs), axis=1)
-        
+
         # Note: max() is a function from chainer.functions, which we imported as "F".
 
         # l_rew            (line 335) is sampled from the replay buffer
@@ -235,7 +234,7 @@ class DQN(object):
         # Note: mean_squared_error() is a function from chainer.functions, which we imported as "F".
 
         ####################################################################################################
-        
+
         return loss
 
     def compute_double_q_learning_loss(self, l_obs, l_act, l_rew, l_next_obs, l_done):
@@ -252,17 +251,16 @@ class DQN(object):
         # Hint: You may want to make use of the following fields: self._discount, self._q, self._qt
         # Hint2: Q-function can be called by self._q.forward(argument)
         # Hint3: You might also find https://docs.chainer.org/en/stable/reference/generated/chainer.functions.select_item.html useful
-        loss = C.Variable(np.array([0.]))  # TODO: replace this line
         "*** YOUR CODE HERE ***"
 
         ####################################################################################################
 
         target_action = F.argmax(self._q.forward(l_next_obs), axis=1)
-        
+
         y = l_rew + (1 - l_done) * self._discount * F.select_item(self._qt.forward(l_next_obs), target_action)
-        
+
         q = F.select_item(self._q.forward(l_obs), l_act) # same as before
-         
+
         loss = F.mean_squared_error(y, q) # same as before
 
         # Based on the performance of the Double DQN algorithm, we agree that the performance gain is
